@@ -1,0 +1,41 @@
+#! /bin/sh
+
+pkill sxhkd
+pgrep -x sxhkd > /dev/null || sxhkd &
+
+bspc monitor -d I II III IV V
+
+bspc config border_width         2
+bspc config window_gap          12
+
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+
+bspc rule -a Gimp desktop='^8' state=floating follow=on
+bspc rule -a Chromium desktop='^2'
+bspc rule -a mplayer2 state=floating
+bspc rule -a Kupfer.py focus=on
+bspc rule -a Screenkey manage=off
+
+# Auto-Start Programs:
+# Picom
+picom --config $HOME/.config/picom/picom.conf --no-vsync &
+
+# Polkit
+/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
+
+# Feh
+feh --bg-scale $HOME/Pictures/Wallpapers/biker-road.jpg
+
+# Polybar
+pkill polybar
+$HOME/.config/polybar/launch.sh &
+
+# Dunst
+pkill dunst
+$HOME/.config/dunst/dunstrc &
+
+# BetterLockScreen xautolock
+pkill xautolock
+xautolock -time 5 -locker "betterlockscreen -l" -notify 30 -notifier "notify-send 'Locker' 'Locking screen in 30 seconds'" -killtime 1 -killer "systemctl suspend" &
